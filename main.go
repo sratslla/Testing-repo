@@ -31,7 +31,7 @@ func main() {
 	router.POST("/books", createBooks)
 	router.PATCH("/checkout", checkoutBook)
 	router.PATCH("/return", returnBook)
-	router.Run("localhost:8080")
+	router.Run("0.0.0.0:8080")
 }
 
 // The functions below simply retries all the books
