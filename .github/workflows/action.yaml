@@ -1,8 +1,8 @@
 name: Broken link check
 on:
   push:
-    branches:
-      - '*'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   broken_link_checker_job:
