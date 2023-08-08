@@ -16,7 +16,7 @@ jobs:
         uses: celinekurpershoek/link-checker@v1.0.2
         with:
           # Required:
-          url: "https://github.com/rootxrishabh/Library-api"
+          url: "https://github.com/${{ github.repository }}/tree/${{ github.ref }}"
           # optional:
           honorRobotExclusions: false
           ignorePatterns: "github,google"
