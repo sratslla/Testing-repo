@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Greet Issue Creator
-        if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
+        if: ${{ github.event_name == 'issue' && github.event.action == 'opened' }}
         run: |
           echo "Thanks for opening this issue!"
     
