@@ -4,57 +4,12 @@ on:
   issues:
     types:
       - opened
-  pull_request:
-    types:
-      - opened
 
 jobs:
   greet_issue:
     runs-on: ubuntu-latest
     steps:
       - name: Greet Issue Creator
-        if: ${{ github.event_name == 'issue' && github.event.action == 'opened' }}
+        if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
         run: |
           echo "Thanks for opening this issue!"
-    
-  assign_reviewers:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Assign Reviewers to PR
-        if: github.event_name == 'pull_request' && github.event.action == 'opened'
-        run: |
-          # Replace 'rootxrishabh' with the desired reviewer(s)
-          gh pr review -a rootxrishabh
-    
-  check_stale_prs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Stale PRs
-        if: github.event_name == 'pull_request' && github.event.action == 'reopened'
-        run: |
-          currentDate=$(date +%s)
-          for pr in $(gh pr list -s all); do
-            prDate=$(gh pr view $pr --json updated_at -q '.updated_at')
-            prDateUnix=$(date -d"$prDate" +%s)
-            daysSinceUpdate=$(( (currentDate - prDateUnix) / (60*60*24) ))
-            
-            if [ $daysSinceUpdate -gt 45 ]; then
-              gh pr label $pr add stale
-            fi
-          done
-
-  check_failing_checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delay for 15 minutes
-        if: github.event_name == 'pull_request' && github.event.action == 'reopened'
-        run: sleep 900
-
-      - name: Check Failing Checks
-        if: github.event_name == 'pull_request' && github.event.action == 'reopened'
-        run: |
-          latestCommitSHA=$(gh pr view ${{ github.event.number }} --json head.sha -q '.head.sha')
-          failingChecks=$(gh api repos/:owner/:repo/commits/$latestCommitSHA/check-runs --jq '[.check_runs[] | select(.conclusion == "failure")]')
-          if [ -n "$failingChecks" ]; then
-            echo "You have some failing checks!"
-          fi
