@@ -36,9 +36,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { owner, repo, number } = context.issue;
+            const { owner, repo } = context.repo;
             const reviewers = ["rootxrishabh"];
-            await github.pulls.requestReviewers({ owner, repo, pull_number: number, reviewers });
+            await github.pulls.requestReviewers({ owner, repo, issue_number: context.issue.number, reviewers });
 
   check_stale_prs:
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
     steps:
       - name: Delay for 15 minutes
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
-        run: sleep 1
+        run: sleep 900
 
       - name: Check Failing Checks
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
