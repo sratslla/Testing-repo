@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Message failure
-        if: ${{ failure() }}
+        if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
         uses: actions/github-script@v4
         with:
           script: |
