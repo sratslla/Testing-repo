@@ -1,26 +1,19 @@
-name: GithubBot
+name: GitHub Actions Workflow
 
 on:
   issues:
     types:
       - opened
-  pull_request:
-    types:
-      - opened
-      - reopened
 
 jobs:
   greet_issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Message failure
+      - name: Debug Information
+        run: |
+          echo "GitHub Event Name: ${{ github.event_name }}"
+          echo "GitHub Event Action: ${{ github.event.action }}"
+      - name: Greet Issue Creator
         if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
-        uses: actions/github-script@v4
-        with:
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Thank you for creating this issue',
-            });
+        run: |
+          echo "Thanks for opening this issue!"
