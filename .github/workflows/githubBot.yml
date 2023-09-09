@@ -36,7 +36,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const response = await github.pulls.requestReviewers({
+            github.pulls.requestReviewers({
               pull_number: context.payload.pull_request.number,
               reviewers: ["rootxrishabh"]
             });
