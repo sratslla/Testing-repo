@@ -29,7 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Assign Reviewers to PR
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'reopened' }}
+        if: |
+          github.event_name == 'pull_request' &&
+          github.event.action == 'reopened' && !contains(github.event.pull_request.requested_reviewers.*.login, github.actor)
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -37,6 +39,7 @@ jobs:
             const { owner, repo, number } = context.issue;
             const reviewers = ["rootxrishabh"];
             await github.pulls.requestReviewers({ owner, repo, pull_number: number, reviewers });
+
   check_stale_prs:
     runs-on: ubuntu-latest
     steps:
