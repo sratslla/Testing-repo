@@ -74,7 +74,7 @@ jobs:
     steps:
       - name: Delay for 15 minutes
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
-        run: sleep 900
+        run: sleep 1
 
       - name: Check Failing Checks
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
@@ -82,7 +82,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { owner, repo, payload } = context;
+            const { owner, repo, payload } = context.repo;
             const latestCommitSHA = payload.pull_request.head.sha;
 
             const { data: checkRuns } = await github.checks.listForRef({
