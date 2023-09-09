@@ -82,10 +82,9 @@ jobs:
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
             script: |
-                const { owner, repo, payload } = context;
-                const latestCommitSHA = payload.pull_request.head.sha;
-
-                try {
+                const { owner, repo } = context.repo;
+                const pr = await github.pulls.get(owner);
+                const latestCommitSHA = pr.head.sha;
                   const { data: checkRuns } = await github.checks.listForRef({
                     owner,
                     repo,
@@ -102,6 +101,3 @@ jobs:
                       body: 'Some checks are failing. Please check.',
                     });
                   }
-                } catch (error) {
-                  console.error('Error:', error.message);
-                }
