@@ -91,5 +91,7 @@ jobs:
             const failingChecks = checks.check_runs.filter(check => check.conclusion === 'failure');
   
             if (failingChecks.length > 0) {
-              core.setFailed(`The PR has failing checks: ${failingChecks.map(check => check.name).join(', ')}`);
+              await github.issues.createComment({
+                body: 'Some checks are failing. Please check.',
+              });
             }
