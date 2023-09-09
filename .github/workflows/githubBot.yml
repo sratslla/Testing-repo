@@ -80,24 +80,31 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
         uses: actions/github-script@v4
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            script: |
-                const { owner, repo } = context.repo;
-                const pr = await github.pulls.get(owner);
-                const latestCommitSHA = pr.head.sha;
-                  const { data: checkRuns } = await github.checks.listForRef({
-                    owner,
-                    repo,
-                    ref: latestCommitSHA,
-                  });
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo, payload } = context;
+            const prNumber = payload.pull_request.number;
+            const { data: pullRequest } = await github.pulls.get({
+              owner,
+              repo,
+              pull_number: prNumber,
+            });
 
-                  const failingChecks = checkRuns.check_runs.filter((check) => check.conclusion === 'failure');
+            const latestCommitSHA = pullRequest.head.sha;
 
-                  if (failingChecks.length > 0) {
-                    await github.issues.createComment({
-                      issue_number: payload.pull_request.number,
-                      owner: owner,
-                      repo: repo,
-                      body: 'Some checks are failing. Please check.',
-                    });
-                  }
+            const { data: checkRuns } = await github.checks.listForRef({
+              owner,
+              repo,
+              ref: latestCommitSHA,
+            });
+
+            const failingChecks = checkRuns.check_runs.filter((check) => check.conclusion === 'failure');
+
+            if (failingChecks.length > 0) {
+              await github.issues.createComment({
+                issue_number: prNumber,
+                owner,
+                repo,
+                body: 'Some checks are failing. Please check.',
+              });
+            }
