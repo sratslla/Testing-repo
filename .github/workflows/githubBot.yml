@@ -1,15 +1,21 @@
-name: GitHub Actions Workflow
+name: GithubBot
 
 on:
   issues:
     types:
       - opened
+  pull_request:
+    types:
+      - opened
+      - reopened
 
 jobs:
   greet_issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Greet Issue Creator
-        if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
+      - name: Check if it's an issue event
+        if: github.event_name == 'issues'
         run: |
           echo "Thanks for opening this issue!"
+          # You can add more actions specific to issues here
+          # For example, you can use GitHub API to add comments, labels, or perform other actions.
