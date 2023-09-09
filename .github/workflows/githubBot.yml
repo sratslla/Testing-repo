@@ -17,6 +17,7 @@ jobs:
         if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
         uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.issues.createComment({
               issue_number: context.issue.number,
@@ -31,6 +32,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && github.event.action == 'reopened' }}
         uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo, number } = context.issue;
             const reviewers = ["rootxrishabh"];
@@ -42,6 +44,7 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action == 'reopened'
         uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
             const currentDate = new Date();
