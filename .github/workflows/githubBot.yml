@@ -13,9 +13,14 @@ jobs:
   greet_issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if it's an issue event
-        if: github.event_name == 'issues'
-        run: |
-          echo "Thanks for opening this issue!"
-          # You can add more actions specific to issues here
-          # For example, you can use GitHub API to add comments, labels, or perform other actions.
+      - name: Message failure
+        if: ${{ failure() }}
+        uses: actions/github-script@v4
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thank you for creating this issue',
+            });
