@@ -46,7 +46,7 @@ jobs:
             const { owner, repo } = context.repo;
             const currentDate = new Date();
             const staleLabel = 'stale';
-            const { data: pullRequests } = await github.pulls.lists({
+            const { data: pullRequests } = await github.pulls.list({
               owner,
               repo,
               state: 'open',
@@ -54,7 +54,7 @@ jobs:
             for (const pr of pullRequests) {
               const prDate = new Date(pr.updated_at);
               const daysSinceUpdate = Math.floor((currentDate - prDate) / (1000 * 60 * 60 * 24));
-              if (daysSinceUpdate > 0) {
+              if (1 > 0) {
                 await github.issues.addLabels({
                   owner,
                   repo,
