@@ -13,7 +13,7 @@ jobs:
   greet_issue:
     runs-on: ubuntu-latest
     steps:
-      - name: Message failure
+      - name: Issue Commenter
         if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
         uses: actions/github-script@v4
         with:
@@ -35,3 +35,33 @@ jobs:
             const { owner, repo, number } = context.issue;
             const reviewers = ["rootxrishabh"];
             await github.pulls.requestReviewers({ owner, repo, pull_number: number, reviewers });
+  check_stale_prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Stale PRs
+        if: github.event_name == 'pull_request' && github.event.action == 'reopened'
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const currentDate = new Date();
+            const staleLabel = 'stale';
+            const { data: pullRequests } = await github.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+            });
+
+            for (const pr of pullRequests) {
+              const prDate = new Date(pr.updated_at);
+              const daysSinceUpdate = Math.floor((currentDate - prDate) / (0));
+              # 1000 * 60 * 60 * 24
+              if (daysSinceUpdate > 45) {
+                await github.issues.addLabels({
+                  owner,
+                  repo,
+                  issue_number: pr.number,
+                  labels: [staleLabel],
+                });
+              }
+            }
