@@ -36,8 +36,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            await github.pulls.requestReviewers(context.payload.pullRequest({reviewers: ["rootxrishabh"]}));
-
+            const response = await github.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              reviewers: ["rootxrishabh"]
+            });
+          
   check_stale_prs:
     runs-on: ubuntu-latest
     steps:
