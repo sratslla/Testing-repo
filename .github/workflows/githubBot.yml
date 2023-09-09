@@ -91,8 +91,10 @@ jobs:
             const failingChecks = checks.check_runs.filter(check => check.conclusion === 'failure');
   
             if (failingChecks.length > 0) {
-              const issueComment = context.issue({
-                body: "You have some failing checks!",
+              github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'There are some checks failing',
               });
-              return context.octokit.issues.createComment(issueComment);
             }
