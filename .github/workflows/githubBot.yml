@@ -28,7 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Assign Reviewers to PR
-        if: github.event_name == 'pull_request' && github.event.action == 'reopened'
-        run: |
-          # Replace 'rootxrishabh' with the desired reviewer(s)
-          gh pr review -a rootxrishabh
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { owner, repo, number } = context.issue;
+            const reviewers = ["rootxrishabh"];
+            await github.pulls.requestReviewers({ owner, repo, pull_number: number, reviewers });
